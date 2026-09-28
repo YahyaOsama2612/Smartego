@@ -17,7 +17,7 @@ import useTaxDiscountOptions from "./Usetaxdiscountoptions";
 import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
 import Modal from "../../components/common/Modal";
-import "./PackagesPage.css";
+import "./Packagespage";
 
 // Live API endpoint. Passed as an absolute URL so it hits this host
 // regardless of whatever baseURL axiosClient is configured with.
@@ -142,7 +142,7 @@ export function PackagesPage() {
         }),
       },
       { merge: false },
-    ).catch(() => {});
+    ).catch(() => { });
   };
 
   // Modal states
@@ -353,52 +353,52 @@ export function PackagesPage() {
                     nameToDisplay(pkg.name).toLowerCase().includes(searchTerm.toLowerCase())
                   )
                   .map((pkg) => (
-                  <tr key={pkg.id} className="table-row">
-                    <td>
-                      <div className="discount-cell">
-                        <div className="discount-cell-icon">
-                          <PackageIcon size={16} />
+                    <tr key={pkg.id} className="table-row">
+                      <td>
+                        <div className="discount-cell">
+                          <div className="discount-cell-icon">
+                            <PackageIcon size={16} />
+                          </div>
+                          <span className="discount-cell-name">
+                            {nameToDisplay(pkg.name)}
+                          </span>
                         </div>
-                        <span className="discount-cell-name">
-                          {nameToDisplay(pkg.name)}
+                      </td>
+                      <td className="cell-amount">{formatPrice(pkg.price)}</td>
+                      <td className="cell-amount">{pkg.msg_number ?? "—"}</td>
+                      <td className="cell-amount">{pkg.months ?? "—"}</td>
+                      <td>
+                        <span className="type-tag type-percentage">
+                          {findOptionLabel(discountOptions, pkg.discount_id)}
                         </span>
-                      </div>
-                    </td>
-                    <td className="cell-amount">{formatPrice(pkg.price)}</td>
-                    <td className="cell-amount">{pkg.msg_number ?? "—"}</td>
-                    <td className="cell-amount">{pkg.months ?? "—"}</td>
-                    <td>
-                      <span className="type-tag type-percentage">
-                        {findOptionLabel(discountOptions, pkg.discount_id)}
-                      </span>
-                    </td>
-                    <td>
-                      <span className="type-tag type-neutral">
-                        {findOptionLabel(taxOptions, pkg.tax_id)}
-                      </span>
-                    </td>
-                    <td>
-                      <div className="actions-cell">
-                        <button
-                          type="button"
-                          className="action-icon-btn edit-btn"
-                          title="Edit package"
-                          onClick={() => handleOpenEdit(pkg)}
-                        >
-                          <Edit2 size={16} />
-                        </button>
-                        <button
-                          type="button"
-                          className="action-icon-btn delete-btn"
-                          title="Delete package"
-                          onClick={() => setDeletingPackage(pkg)}
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+                      <td>
+                        <span className="type-tag type-neutral">
+                          {findOptionLabel(taxOptions, pkg.tax_id)}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="actions-cell">
+                          <button
+                            type="button"
+                            className="action-icon-btn edit-btn"
+                            title="Edit package"
+                            onClick={() => handleOpenEdit(pkg)}
+                          >
+                            <Edit2 size={16} />
+                          </button>
+                          <button
+                            type="button"
+                            className="action-icon-btn delete-btn"
+                            title="Delete package"
+                            onClick={() => setDeletingPackage(pkg)}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
               )}
             </tbody>
           </table>

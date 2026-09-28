@@ -4,7 +4,7 @@ import Modal from "../../components/common/Modal";
 import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
 import { axiosClient } from "../../api/axiosClient";
-import "./WhatsItemsModal.css";
+import "./WhatsItemsModal";
 
 const formatDate = (value) => {
   if (!value) return "—";
