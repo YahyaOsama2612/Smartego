@@ -14,6 +14,7 @@ export function Header() {
     if (pathname.includes("/tax")) return "Tax";
     if (pathname.includes("/package")) return "Packages";
     if (pathname.includes("/orders")) return "Orders";
+    if (pathname.includes("/subscribes")) return "Subscribes";
     return "Dashboard Overview";
   };
 

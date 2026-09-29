@@ -23,9 +23,10 @@ export function Sidebar({ isCollapsed, onToggle }) {
     { label: "Users ", path: "/users", icon: Users },
     { label: "Discounts", path: "/discount", icon: Percent },
     { label: "Settings", path: "/settings", icon: Settings },
-    {label:"Tax" , path:"/tax" , icon: ReceiptText },
-    {label:"Packages" , path:"/package" , icon: Layers },
-    {label:"Orders" , path:"/orders" , icon: ShoppingBag }
+    { label: "Tax", path: "/tax", icon: ReceiptText },
+    { label: "Packages", path: "/package", icon: Layers },
+    { label: "Orders", path: "/orders", icon: ShoppingBag },
+    { label: "Subscribes", path: "/subscribes", icon: Users }
   ];
 
   return (
