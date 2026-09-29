@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://smartego.keeto.org/api';
+const API_BASE_URL = 'https://bcknd.smartego.org/api';
 
 export const axiosClient = axios.create({
   baseURL: API_BASE_URL,

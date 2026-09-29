@@ -1,0 +1,174 @@
+.toast-container {
+    position: fixed;
+    top: 12px;
+    right: 4px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    width: min(412px, 100vw);
+    pointer-events: none;
+}
+
+/* Wrapper animates its height (0fr <-> 1fr) so neighbouring toasts glide
+   up/down instead of jumping when one appears or leaves. */
+.toast-wrap {
+    display: grid;
+    grid-template-rows: 1fr;
+    animation: toast-wrap-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.toast-wrap-inner {
+    min-height: 0;
+    overflow: hidden;
+    padding: 4px 16px 14px;
+}
+
+/* Outro is staged: the toast itself glides away first, then (after a short
+   delay) its slot collapses so the toasts below ease up into the gap. */
+.toast-wrap.leaving {
+    animation: toast-wrap-out 0.42s cubic-bezier(0.32, 0.72, 0, 1) 0.18s forwards;
+}
+
+.toast {
+    will-change: transform, opacity;
+    pointer-events: auto;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    background-color: #ffffff;
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-left-width: 4px;
+    border-radius: var(--radius-md, 10px);
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.14);
+    font-size: 13px;
+    color: var(--text-primary, #0f172a);
+    animation: toast-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.toast-wrap.leaving .toast {
+    animation: toast-out 0.4s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+    pointer-events: none;
+}
+
+.toast-error {
+    border-left-color: #e11d48;
+}
+
+.toast-error .toast-icon {
+    color: #e11d48;
+}
+
+.toast-success {
+    border-left-color: #10b981;
+}
+
+.toast-success .toast-icon {
+    color: #10b981;
+}
+
+.toast-info {
+    border-left-color: #3b82f6;
+}
+
+.toast-info .toast-icon {
+    color: #3b82f6;
+}
+
+.toast-icon {
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.toast-message {
+    flex: 1;
+    line-height: 1.45;
+    word-break: break-word;
+    white-space: pre-line;
+}
+
+.toast-close {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted, #94a3b8);
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.toast-close {
+    transition: background-color 0.15s ease, color 0.15s ease,
+        transform 0.15s ease;
+}
+
+.toast-close:hover {
+    background-color: #f1f5f9;
+    color: var(--text-primary, #0f172a);
+}
+
+.toast-close:active {
+    transform: scale(0.85);
+}
+
+@keyframes toast-in {
+    from {
+        opacity: 0;
+        transform: translateX(32px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+@keyframes toast-out {
+    0% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+
+    60% {
+        opacity: 0.4;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(40px) scale(0.94);
+    }
+}
+
+@keyframes toast-wrap-in {
+    from {
+        grid-template-rows: 0fr;
+    }
+
+    to {
+        grid-template-rows: 1fr;
+    }
+}
+
+@keyframes toast-wrap-out {
+    from {
+        grid-template-rows: 1fr;
+    }
+
+    to {
+        grid-template-rows: 0fr;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .toast-wrap,
+    .toast,
+    .toast-wrap.leaving,
+    .toast-wrap.leaving .toast {
+        animation-duration: 0.01ms !important;
+    }
+}

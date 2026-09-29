@@ -9,11 +9,11 @@ import "./Messengeritemsmodal";
 // Live API base. Passed as an absolute URL so it hits this host regardless
 // of whatever baseURL axiosClient is configured with (same approach as
 // USERS_ENDPOINT in UsersPage.jsx).
-const MESSENGER_ENDPOINT_BASE = "https://smartego.keeto.org/api/admin/users";
+const MESSENGER_ENDPOINT_BASE = "https://bcknd.smartego.org/api/admin/users";
 
 // Storage files come back from the API as a relative path (e.g. "messenger/ai_files/...").
 // Adjust this base if your storage is served from a different host/path.
-const FILE_STORAGE_BASE_URL = "https://smartego.keeto.org/storage";
+const FILE_STORAGE_BASE_URL = "https://bcknd.smartego.org/storage";
 
 const resolveFileUrl = (path) => {
     if (!path) return null;

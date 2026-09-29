@@ -16,7 +16,7 @@ import "./Subscriberspage.css";
 // GET only. Uses the same host as axiosClient so the admin bearer token is
 // accepted (a different host returns 401, which logs the admin out).
 // Note the API's spelling: "subscripers".
-const SUBSCRIBERS_ENDPOINT = "https://smartego.keeto.org/api/admin/subscripers";
+const SUBSCRIBERS_ENDPOINT = "https://bcknd.smartego.org/api/admin/subscripers";
 
 // Helper: render an ISO timestamp / date string as a short readable date
 const formatDate = (value) => {

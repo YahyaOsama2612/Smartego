@@ -1,5 +1,42 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import axiosClient from "../api/axiosClient";
+import { toast } from "../components/common/Toast";
+
+/**
+ * Build a readable message from an axios error. Prefers Laravel-style
+ * validation errors ({ errors: { field: ["msg"] } }), then the server's
+ * `message`, then a friendly network/timeout message.
+ */
+const extractErrorMessage = (err, fallback) => {
+  const data = err.response?.data;
+
+  if (data?.errors && typeof data.errors === "object") {
+    const lines = Object.values(data.errors)
+      .flat()
+      .filter((m) => typeof m === "string");
+    if (lines.length) return lines.slice(0, 4).join("\n");
+  }
+
+  if (typeof data?.message === "string" && data.message) return data.message;
+  if (typeof data?.error === "string" && data.error) return data.error;
+
+  if (err.code === "ECONNABORTED") return "The request timed out. Please try again.";
+  if (!err.response && err.message === "Network Error") {
+    return "Cannot reach the server. Check your connection.";
+  }
+
+  return err.message || fallback;
+};
+
+/**
+ * Compute the error message and show it as a toast. 401s are skipped because
+ * axiosClient already handles them by logging the admin out.
+ */
+const reportError = (err, fallback) => {
+  const message = extractErrorMessage(err, fallback);
+  if (err.response?.status !== 401) toast.error(message);
+  return message;
+};
 
 /**
  * Reusable generic CRUD Hook for RESTful resources
@@ -142,10 +179,7 @@ export function useCrud(endpoint, options = {}) {
 
         return { data: list, total, raw: data };
       } catch (err) {
-        const errorMsg =
-          err.response?.data?.message ||
-          err.message ||
-          `Failed to fetch records from ${listEndpoint}`;
+        const errorMsg = reportError(err, `Failed to fetch records from ${listEndpoint}`);
         setError(errorMsg);
 
         // If initial data was provided and network/404 failed, retain initialData
@@ -180,10 +214,7 @@ export function useCrud(endpoint, options = {}) {
           setItem(local);
           return local;
         }
-        const errorMsg =
-          err.response?.data?.message ||
-          err.message ||
-          `Failed to fetch record #${id}`;
+        const errorMsg = reportError(err, `Failed to fetch record #${id}`);
         setError(errorMsg);
         throw err;
       } finally {
@@ -228,10 +259,7 @@ export function useCrud(endpoint, options = {}) {
         }));
         return created;
       } catch (err) {
-        const errorMsg =
-          err.response?.data?.message ||
-          err.message ||
-          "Failed to create record";
+        const errorMsg = reportError(err, "Failed to create record");
         setError(errorMsg);
         throw err;
       } finally {
@@ -278,10 +306,7 @@ export function useCrud(endpoint, options = {}) {
         }
         return updated;
       } catch (err) {
-        const errorMsg =
-          err.response?.data?.message ||
-          err.message ||
-          `Failed to update record #${id}`;
+        const errorMsg = reportError(err, `Failed to update record #${id}`);
         setError(errorMsg);
         throw err;
       } finally {
@@ -320,10 +345,7 @@ export function useCrud(endpoint, options = {}) {
         }
         return true;
       } catch (err) {
-        const errorMsg =
-          err.response?.data?.message ||
-          err.message ||
-          `Failed to delete record #${id}`;
+        const errorMsg = reportError(err, `Failed to delete record #${id}`);
         setError(errorMsg);
         throw err;
       } finally {

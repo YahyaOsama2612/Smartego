@@ -21,7 +21,7 @@ const formatDate = (value) => {
 
 // Storage files come back from the API as a relative path (e.g. "whats/ai_files/...").
 // Adjust this base if your storage is served from a different host/path.
-const FILE_STORAGE_BASE_URL = "https://smartego.keeto.org/storage";
+const FILE_STORAGE_BASE_URL = "https://bcknd.smartego.org/storage";
 
 const resolveFileUrl = (path) => {
   if (!path) return null;

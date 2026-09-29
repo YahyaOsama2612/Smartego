@@ -23,7 +23,7 @@ import "./DiscountPage.css";
 // regardless of whatever baseURL axiosClient is configured with.
 // GET (list), GET one, POST, PUT and DELETE all live under the same
 // /admin/discounts base path, so a single endpoint covers every op.
-const DISCOUNTS_ENDPOINT = "https://smartego.keeto.org/api/admin/discounts";
+const DISCOUNTS_ENDPOINT = "https://bcknd.smartego.org/api/admin/discounts";
 
 // Helper: strip out "unset" filter values so we don't send empty/ALL
 // query params to the API.
@@ -140,7 +140,7 @@ export function DiscountsPage() {
         }),
       },
       { merge: false },
-    ).catch(() => {});
+    ).catch(() => { });
   };
 
   // Modal states
@@ -328,51 +328,51 @@ export function DiscountsPage() {
                 discounts
                   .filter((discount) => !searchTerm || discount.name?.toLowerCase().includes(searchTerm.toLowerCase()))
                   .map((discount) => (
-                  <tr key={discount.id} className="table-row">
-                    <td>
-                      <div className="discount-cell">
-                        <div className="discount-cell-icon">
-                          <TicketPercent size={16} />
+                    <tr key={discount.id} className="table-row">
+                      <td>
+                        <div className="discount-cell">
+                          <div className="discount-cell-icon">
+                            <TicketPercent size={16} />
+                          </div>
+                          <span className="discount-cell-name">
+                            {discount.name}
+                          </span>
                         </div>
-                        <span className="discount-cell-name">
-                          {discount.name}
+                      </td>
+                      <td className="cell-amount">
+                        {formatAmount(discount.amount, discount.type)}
+                      </td>
+                      <td>
+                        <span
+                          className={`type-tag type-${discount.type === "fixed" ? "fixed" : "percentage"}`}
+                        >
+                          {discount.type === "fixed" ? "Fixed" : "Percentage"}
                         </span>
-                      </div>
-                    </td>
-                    <td className="cell-amount">
-                      {formatAmount(discount.amount, discount.type)}
-                    </td>
-                    <td>
-                      <span
-                        className={`type-tag type-${discount.type === "fixed" ? "fixed" : "percentage"}`}
-                      >
-                        {discount.type === "fixed" ? "Fixed" : "Percentage"}
-                      </span>
-                    </td>
-                    <td className="cell-date">{formatDate(discount.from)}</td>
-                    <td className="cell-date">{formatDate(discount.to)}</td>
-                    <td>
-                      <div className="actions-cell">
-                        <button
-                          type="button"
-                          className="action-icon-btn edit-btn"
-                          title="Edit discount"
-                          onClick={() => handleOpenEdit(discount)}
-                        >
-                          <Edit2 size={16} />
-                        </button>
-                        <button
-                          type="button"
-                          className="action-icon-btn delete-btn"
-                          title="Delete discount"
-                          onClick={() => setDeletingDiscount(discount)}
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+                      <td className="cell-date">{formatDate(discount.from)}</td>
+                      <td className="cell-date">{formatDate(discount.to)}</td>
+                      <td>
+                        <div className="actions-cell">
+                          <button
+                            type="button"
+                            className="action-icon-btn edit-btn"
+                            title="Edit discount"
+                            onClick={() => handleOpenEdit(discount)}
+                          >
+                            <Edit2 size={16} />
+                          </button>
+                          <button
+                            type="button"
+                            className="action-icon-btn delete-btn"
+                            title="Delete discount"
+                            onClick={() => setDeletingDiscount(discount)}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
               )}
             </tbody>
           </table>

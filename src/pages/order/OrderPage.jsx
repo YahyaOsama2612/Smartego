@@ -22,7 +22,7 @@ import Modal from "../../components/common/Modal";
 
 import "./OrderPage";
 
-const BASE = "https://smartego.keeto.org/api/admin/orders";
+const BASE = "https://bcknd.smartego.org/api/admin/orders";
 const ORDERS_ENDPOINT = BASE; // GET list, POST create
 const LOOKUP_ENDPOINT = `${BASE}/lookup`; // GET { users, packages } (same shape as /orders/lists)
 
@@ -487,8 +487,8 @@ export function OrdersPage() {
                         <td>
                           <span
                             className={`type-tag ${order.channel === "messenger"
-                                ? "type-fixed"
-                                : "type-percentage"
+                              ? "type-fixed"
+                              : "type-percentage"
                               }`}
                           >
                             {order.channel || "—"}

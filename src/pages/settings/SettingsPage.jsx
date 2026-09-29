@@ -6,7 +6,7 @@ import "./SettingsPage.css";
 
 // Absolute URL so it hits this host regardless of axiosClient's baseURL.
 const AI_CONTEXT_ENDPOINT =
-  "https://smartego.keeto.org/api/admin/settings/ai-context";
+  "https://bcknd.smartego.org/api/admin/settings/ai-context";
 
 export function SettingsPage() {
   // GET response shape: { status: true, data: { name, value } }
@@ -33,8 +33,8 @@ export function SettingsPage() {
     } catch (err) {
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Couldn't load the AI context setting.",
+        err.message ||
+        "Couldn't load the AI context setting.",
       );
     } finally {
       setLoading(false);
@@ -68,8 +68,8 @@ export function SettingsPage() {
     } catch (err) {
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Couldn't save the AI context setting.",
+        err.message ||
+        "Couldn't save the AI context setting.",
       );
     } finally {
       setSaving(false);
@@ -82,7 +82,7 @@ export function SettingsPage() {
     <div className="settings-page-container">
       {/* Header */}
       <div className="settings-page-header">
-       {/*  <div>
+        {/*  <div>
           <h2 className="settings-page-title">Settings</h2>
           
         </div> */}

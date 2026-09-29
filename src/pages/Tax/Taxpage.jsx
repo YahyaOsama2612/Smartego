@@ -25,7 +25,7 @@ import "./Taxpage.css";
 //   GET    /admin/taxes/{tax}    -> get one
 //   PUT    /admin/taxes/{tax}    -> update
 //   DELETE /admin/taxes/{tax}    -> delete
-const TAXES_ENDPOINT = "https://smartego.keeto.org/api/admin/taxes";
+const TAXES_ENDPOINT = "https://bcknd.smartego.org/api/admin/taxes";
 
 // Percentage is the only tax type the API supports.
 const TAX_TYPE = "percentage";
@@ -128,7 +128,7 @@ export function TaxesPage() {
         }),
       },
       { merge: false },
-    ).catch(() => {});
+    ).catch(() => { });
   };
 
   // Modal states
@@ -320,50 +320,50 @@ export function TaxesPage() {
                 taxes
                   .filter((tax) => !searchTerm || tax.name?.toLowerCase().includes(searchTerm.toLowerCase()))
                   .map((tax) => (
-                  <tr key={tax.id} className="taxes-table-row">
-                    <td>
-                      <div className="taxes-name-cell">
-                        <div className="taxes-name-avatar">
-                          {tax.name ? tax.name.charAt(0).toUpperCase() : "T"}
+                    <tr key={tax.id} className="taxes-table-row">
+                      <td>
+                        <div className="taxes-name-cell">
+                          <div className="taxes-name-avatar">
+                            {tax.name ? tax.name.charAt(0).toUpperCase() : "T"}
+                          </div>
+                          <div className="taxes-name-meta">
+                            <span className="taxes-name-title">{tax.name}</span>
+                            <span className="taxes-name-sub">#{tax.id}</span>
+                          </div>
                         </div>
-                        <div className="taxes-name-meta">
-                          <span className="taxes-name-title">{tax.name}</span>
-                          <span className="taxes-name-sub">#{tax.id}</span>
+                      </td>
+                      <td>
+                        <span className="taxes-type-tag">
+                          <Percent size={12} />
+                          {tax.type || "—"}
+                        </span>
+                      </td>
+                      <td className="taxes-cell-amount">{formatAmount(tax)}</td>
+                      <td className="taxes-cell-muted">
+                        {formatDate(tax.created_at)}
+                      </td>
+                      <td>
+                        <div className="taxes-actions-cell">
+                          <button
+                            type="button"
+                            className="taxes-action-icon-btn taxes-edit-btn"
+                            title="Edit tax"
+                            onClick={() => handleOpenEdit(tax)}
+                          >
+                            <Edit2 size={16} />
+                          </button>
+                          <button
+                            type="button"
+                            className="taxes-action-icon-btn taxes-delete-btn"
+                            title="Delete tax"
+                            onClick={() => setDeletingTax(tax)}
+                          >
+                            <Trash2 size={16} />
+                          </button>
                         </div>
-                      </div>
-                    </td>
-                    <td>
-                      <span className="taxes-type-tag">
-                        <Percent size={12} />
-                        {tax.type || "—"}
-                      </span>
-                    </td>
-                    <td className="taxes-cell-amount">{formatAmount(tax)}</td>
-                    <td className="taxes-cell-muted">
-                      {formatDate(tax.created_at)}
-                    </td>
-                    <td>
-                      <div className="taxes-actions-cell">
-                        <button
-                          type="button"
-                          className="taxes-action-icon-btn taxes-edit-btn"
-                          title="Edit tax"
-                          onClick={() => handleOpenEdit(tax)}
-                        >
-                          <Edit2 size={16} />
-                        </button>
-                        <button
-                          type="button"
-                          className="taxes-action-icon-btn taxes-delete-btn"
-                          title="Delete tax"
-                          onClick={() => setDeletingTax(tax)}
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+                    </tr>
+                  ))
               )}
             </tbody>
           </table>

@@ -39,7 +39,7 @@ export const authApi = {
 
   /**
    * Admin logout
-   * Using endpoint: https://smartego.keeto.org/api/auth/logout
+   * Using endpoint: https://bcknd.smartego.org/api/auth/logout
    */
   async logout() {
     try {

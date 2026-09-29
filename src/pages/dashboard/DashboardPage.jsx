@@ -130,7 +130,7 @@ const FALLBACK_DASHBOARD_STATS = {
 export function DashboardPage() {
   const { user } = useAuth();
 
-  // Connect to the requested API endpoint: https://smartego.keeto.org/api/admin/user_lists
+  // Connect to the requested API endpoint: https://bcknd.smartego.org/api/admin/user_lists
   const {
     items: userLists,
     loading,
@@ -141,7 +141,7 @@ export function DashboardPage() {
     immediate: true,
   });
 
-  // Connect to the requested API endpoint: https://smartego.keeto.org/api/admin/dashboard
+  // Connect to the requested API endpoint: https://bcknd.smartego.org/api/admin/dashboard
   // NOTE: useCrud only unwraps array-shaped `data` payloads (it's built for lists),
   // and /admin/dashboard returns a single object, so it's fetched directly here
   // using the same axiosClient (same base URL + auth) that useCrud uses internally.
@@ -469,9 +469,8 @@ export function DashboardPage() {
                       <td>
                         <div className="waba-meta">
                           <span
-                            className={`status-pill ${
-                              isVerified ? "status-active" : "status-pending"
-                            }`}
+                            className={`status-pill ${isVerified ? "status-active" : "status-pending"
+                              }`}
                           >
                             <span className="status-dot"></span>
                             {isVerified ? "Verified" : "Pending"}
@@ -540,7 +539,7 @@ export function DashboardPage() {
           <span>
             Showing {filteredUsers.length} of {userLists.length} restaurants
           </span>
-          
+
         </div>
       </div>
 
@@ -627,11 +626,10 @@ export function DashboardPage() {
               <div className="detail-item">
                 <span className="detail-label">Phone Status</span>
                 <span
-                  className={`status-pill ${
-                    selectedUser.phone_status === "verified"
+                  className={`status-pill ${selectedUser.phone_status === "verified"
                       ? "status-active"
                       : "status-pending"
-                  }`}
+                    }`}
                 >
                   <span className="status-dot"></span>
                   {selectedUser.phone_status || "Pending"}

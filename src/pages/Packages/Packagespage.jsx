@@ -23,7 +23,7 @@ import "./Packagespage.css";
 // regardless of whatever baseURL axiosClient is configured with.
 // GET (list), GET one, POST, PUT and DELETE all live under the same
 // /admin/packages base path, so a single endpoint covers every op.
-const PACKAGES_ENDPOINT = "https://smartego.keeto.org/api/admin/packages";
+const PACKAGES_ENDPOINT = "https://bcknd.smartego.org/api/admin/packages";
 
 // Helper: strip out "unset" filter values so we don't send empty/ALL
 // query params to the API.

@@ -26,7 +26,7 @@ import "./UsersPage.css";
 
 // Live API endpoint. Passed as an absolute URL so it hits this host
 // regardless of whatever baseURL axiosClient is configured with.
-const USERS_ENDPOINT = "https://smartego.keeto.org/api/admin/users";
+const USERS_ENDPOINT = "https://bcknd.smartego.org/api/admin/users";
 
 // Helper: strip out "unset" filter values so we don't send empty/ALL
 // query params to the API.

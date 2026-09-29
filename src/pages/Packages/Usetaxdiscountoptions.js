@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import axiosClient from "../../api/axiosClient";
 
 const TAX_DISCOUNT_LIST_ENDPOINT =
-  "https://smartego.keeto.org/api/admin/tax-and-discount-list";
+  "https://bcknd.smartego.org/api/admin/tax-and-discount-list";
 
 /**
  * Fetches the combined discounts + taxes reference lists used to populate

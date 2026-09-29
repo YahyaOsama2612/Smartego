@@ -28,7 +28,7 @@ import "./AdminPage.css";
 //   GET    /admin/admins/{admin}    -> get one
 //   PUT    /admin/admins/{admin}    -> update
 //   DELETE /admin/admins/{admin}    -> delete
-const ADMINS_ENDPOINT = "https://smartego.keeto.org/api/admin/admins";
+const ADMINS_ENDPOINT = "https://bcknd.smartego.org/api/admin/admins";
 
 // Helper: strip out "unset" filter values so we don't send empty/ALL
 // query params to the API.
@@ -121,7 +121,7 @@ export function AdminsPage() {
         }),
       },
       { merge: false },
-    ).catch(() => {});
+    ).catch(() => { });
   };
 
   // Modal states
@@ -319,52 +319,52 @@ export function AdminsPage() {
                     admin.email?.toLowerCase().includes(searchTerm.toLowerCase())
                   )
                   .map((admin) => (
-                  <tr key={admin.id} className="table-row">
-                    <td>
-                      <div className="user-cell">
-                        <div className="user-cell-avatar">
-                          {admin.name
-                            ? admin.name.charAt(0).toUpperCase()
-                            : "A"}
+                    <tr key={admin.id} className="table-row">
+                      <td>
+                        <div className="user-cell">
+                          <div className="user-cell-avatar">
+                            {admin.name
+                              ? admin.name.charAt(0).toUpperCase()
+                              : "A"}
+                          </div>
+                          <div className="user-cell-meta">
+                            <span className="user-cell-name">{admin.name}</span>
+                            <span className="user-cell-email">{admin.email}</span>
+                          </div>
                         </div>
-                        <div className="user-cell-meta">
-                          <span className="user-cell-name">{admin.name}</span>
-                          <span className="user-cell-email">{admin.email}</span>
+                      </td>
+                      <td>
+                        <span className="role-tag">
+                          <Shield size={12} />
+                          {admin.role || "admin"}
+                        </span>
+                      </td>
+                      <td className="cell-date">{admin.phone || "—"}</td>
+                      <td className="cell-date">
+                        {formatDate(admin.created_at)}
+                      </td>
+                      <td>
+                        <div className="actions-cell">
+                          <button
+                            type="button"
+                            className="action-icon-btn edit-btn"
+                            title="Edit admin"
+                            onClick={() => handleOpenEdit(admin)}
+                          >
+                            <Edit2 size={16} />
+                          </button>
+                          <button
+                            type="button"
+                            className="action-icon-btn delete-btn"
+                            title="Delete admin"
+                            onClick={() => setDeletingAdmin(admin)}
+                          >
+                            <Trash2 size={16} />
+                          </button>
                         </div>
-                      </div>
-                    </td>
-                    <td>
-                      <span className="role-tag">
-                        <Shield size={12} />
-                        {admin.role || "admin"}
-                      </span>
-                    </td>
-                    <td className="cell-date">{admin.phone || "—"}</td>
-                    <td className="cell-date">
-                      {formatDate(admin.created_at)}
-                    </td>
-                    <td>
-                      <div className="actions-cell">
-                        <button
-                          type="button"
-                          className="action-icon-btn edit-btn"
-                          title="Edit admin"
-                          onClick={() => handleOpenEdit(admin)}
-                        >
-                          <Edit2 size={16} />
-                        </button>
-                        <button
-                          type="button"
-                          className="action-icon-btn delete-btn"
-                          title="Delete admin"
-                          onClick={() => setDeletingAdmin(admin)}
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+                    </tr>
+                  ))
               )}
             </tbody>
           </table>
