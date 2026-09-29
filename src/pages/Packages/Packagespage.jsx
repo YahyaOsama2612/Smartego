@@ -17,7 +17,7 @@ import useTaxDiscountOptions from "./Usetaxdiscountoptions";
 import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
 import Modal from "../../components/common/Modal";
-import "./Packagespage";
+import "./Packagespage.css";
 
 // Live API endpoint. Passed as an absolute URL so it hits this host
 // regardless of whatever baseURL axiosClient is configured with.
@@ -70,6 +70,8 @@ const findOptionLabel = (options, id) => {
   const match = options.find((o) => String(o.id) === String(id));
   return match ? match.name : `#${id}`;
 };
+
+const TYPE_LABELS = { whats: "WhatsApp", face: "Messenger", all: "All" };
 
 export function PackagesPage() {
   // Using the generic useCrud hook against the live admin/packages endpoint
@@ -180,7 +182,7 @@ export function PackagesPage() {
     months: pkg.months ?? "",
     discountId: pkg.discount_id ?? "",
     taxId: pkg.tax_id ?? "",
-    type: ["messenger", "all"].includes(pkg.type) ? pkg.type : "whats",
+    type: ["face", "all"].includes(pkg.type) ? pkg.type : "whats",
   });
 
   const handleOpenEdit = async (pkg) => {
@@ -227,7 +229,7 @@ export function PackagesPage() {
     ) {
       errors.months = "A valid number of months is required";
     }
-    if (!["whats", "messenger", "all"].includes(formData.type)) {
+    if (!["whats", "face", "all"].includes(formData.type)) {
       errors.type = "Please select a valid package type";
     }
 
@@ -323,87 +325,94 @@ export function PackagesPage() {
         </div>
       </div>
 
-      {/* Packages Table Card */}
-      <div className="packages-table-card">
-        <div className="table-responsive">
-          <table className="custom-table">
-            <thead>
-              <tr>
-                <th>Package</th>
-                <th>Price</th>
-                <th>Messages</th>
-                <th>Months</th>
-                <th>Discount</th>
-                <th>Tax</th>
-                <th className="th-actions">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {!loading && packages.length === 0 ? (
-                <tr>
-                  <td colSpan="7" className="empty-state">
-                    <Database size={32} className="empty-icon" />
-                    <p>No packages found matching your query.</p>
-                  </td>
-                </tr>
-              ) : (
-                packages
-                  .filter((pkg) =>
-                    !searchTerm ||
-                    nameToDisplay(pkg.name).toLowerCase().includes(searchTerm.toLowerCase())
-                  )
-                  .map((pkg) => (
-                    <tr key={pkg.id} className="table-row">
-                      <td>
-                        <div className="discount-cell">
-                          <div className="discount-cell-icon">
-                            <PackageIcon size={16} />
-                          </div>
-                          <span className="discount-cell-name">
-                            {nameToDisplay(pkg.name)}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="cell-amount">{formatPrice(pkg.price)}</td>
-                      <td className="cell-amount">{pkg.msg_number ?? "—"}</td>
-                      <td className="cell-amount">{pkg.months ?? "—"}</td>
-                      <td>
-                        <span className="type-tag type-percentage">
-                          {findOptionLabel(discountOptions, pkg.discount_id)}
-                        </span>
-                      </td>
-                      <td>
-                        <span className="type-tag type-neutral">
-                          {findOptionLabel(taxOptions, pkg.tax_id)}
-                        </span>
-                      </td>
-                      <td>
-                        <div className="actions-cell">
-                          <button
-                            type="button"
-                            className="action-icon-btn edit-btn"
-                            title="Edit package"
-                            onClick={() => handleOpenEdit(pkg)}
-                          >
-                            <Edit2 size={16} />
-                          </button>
-                          <button
-                            type="button"
-                            className="action-icon-btn delete-btn"
-                            title="Delete package"
-                            onClick={() => setDeletingPackage(pkg)}
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-              )}
-            </tbody>
-          </table>
+      {/* Packages Cards */}
+      {!loading && packages.length === 0 ? (
+        <div className="packages-empty">
+          <Database size={32} className="empty-icon" />
+          <p>No packages found matching your query.</p>
         </div>
+      ) : (
+        <div className="packages-grid">
+          {packages
+            .filter(
+              (pkg) =>
+                !searchTerm ||
+                nameToDisplay(pkg.name)
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase()),
+            )
+            .map((pkg) => (
+              <div key={pkg.id} className="package-card">
+                <div className="package-card-top">
+                  <div className="package-card-icon">
+                    <PackageIcon size={20} />
+                  </div>
+                  <div className="package-card-title">
+                    <h3 className="package-card-name">
+                      {nameToDisplay(pkg.name)}
+                    </h3>
+                    <span className="package-card-type">
+                      {TYPE_LABELS[pkg.type] || "WhatsApp"}
+                    </span>
+                  </div>
+                </div>
 
+                <div className="package-card-price">
+                  {formatPrice(pkg.price)}
+                </div>
+
+                <div className="package-card-stats">
+                  <div className="package-stat">
+                    <span className="package-stat-label">Messages</span>
+                    <span className="package-stat-value">
+                      {pkg.msg_number ?? "—"}
+                    </span>
+                  </div>
+                  <div className="package-stat">
+                    <span className="package-stat-label">Months</span>
+                    <span className="package-stat-value">
+                      {pkg.months ?? "—"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="package-card-tags">
+                  <div className="package-tag-row">
+                    <span className="package-tag-label">Discount</span>
+                    <span className="type-tag type-percentage">
+                      {findOptionLabel(discountOptions, pkg.discount_id)}
+                    </span>
+                  </div>
+                  <div className="package-tag-row">
+                    <span className="package-tag-label">Tax</span>
+                    <span className="type-tag type-neutral">
+                      {findOptionLabel(taxOptions, pkg.tax_id)}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="package-card-actions">
+                  <button
+                    type="button"
+                    className="card-action-btn edit-btn"
+                    onClick={() => handleOpenEdit(pkg)}
+                  >
+                    <Edit2 size={15} /> Edit
+                  </button>
+                  <button
+                    type="button"
+                    className="card-action-btn delete-btn"
+                    onClick={() => setDeletingPackage(pkg)}
+                  >
+                    <Trash2 size={15} /> Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+        </div>
+      )}
+
+      <div className="packages-footer">
         {/* Footer Summary */}
         <div className="table-footer-bar">
           <span>
@@ -534,41 +543,42 @@ export function PackagesPage() {
             />
           </div>
 
-          <Input
-            label="Message Count"
-            name="msgNumber"
-            type="number"
-            min="0"
-            step="1"
-            value={formData.msgNumber}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, msgNumber: e.target.value }))
-            }
-            placeholder="e.g. 1000"
-            error={formErrors.msgNumber}
-            required
-          />
-
-          <div className="form-select-group">
-            <label className="form-select-label" htmlFor="type">
-              Type
-            </label>
-            <select
-              id="type"
-              className="form-select"
-              value={formData.type}
+          <div className="form-row">
+            <Input
+              label="Message Count"
+              name="msgNumber"
+              type="number"
+              min="0"
+              step="1"
+              value={formData.msgNumber}
               onChange={(e) =>
-                setFormData((prev) => ({ ...prev, type: e.target.value }))
+                setFormData((prev) => ({ ...prev, msgNumber: e.target.value }))
               }
+              placeholder="e.g. 1000"
+              error={formErrors.msgNumber}
               required
-            >
-              <option value="whats">WhatsApp</option>
-              <option value="messenger">Messenger</option>
-              <option value="all">All</option>
-            </select>
-            {formErrors.type && (
-              <span className="form-error">{formErrors.type}</span>
-            )}
+            />
+            <div className="form-select-group">
+              <label className="form-select-label" htmlFor="type">
+                Type
+              </label>
+              <select
+                id="type"
+                className="form-select"
+                value={formData.type}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, type: e.target.value }))
+                }
+                required
+              >
+                <option value="whats">WhatsApp</option>
+                <option value="face">Messenger</option>
+                <option value="all">All</option>
+              </select>
+              {formErrors.type && (
+                <span className="form-error">{formErrors.type}</span>
+              )}
+            </div>
           </div>
 
           <div className="form-row">
