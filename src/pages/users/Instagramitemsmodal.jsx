@@ -4,7 +4,7 @@ import Modal from "../../components/common/Modal";
 import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
 import { axiosClient } from "../../api/axiosClient";
-import "./InstagramItemsModal.css";
+import "./Instagramitemsmodal.css";
 
 // Live API base. Absolute URL so it hits this host regardless of axiosClient's
 // baseURL (same approach as MessengerItemsModal).
