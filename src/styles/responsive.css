@@ -12,10 +12,13 @@ body,
 }
 
 img,
-svg,
 video,
 canvas {
   max-width: 100%;
+}
+
+svg {
+  flex-shrink: 0;
 }
 
 input,

@@ -4,7 +4,7 @@ import Modal from "../../components/common/Modal";
 import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
 import { axiosClient } from "../../api/axiosClient";
-import "./Messengeritemsmodal";
+import "./Messengeritemsmodal.css";
 
 // Live API base. Passed as an absolute URL so it hits this host regardless
 // of whatever baseURL axiosClient is configured with (same approach as
