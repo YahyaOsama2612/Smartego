@@ -335,6 +335,7 @@ export function OrdersPage() {
               <option value="">All channels</option>
               <option value="whatsapp">WhatsApp</option>
               <option value="messenger">Messenger</option>
+              <option value="instagram">Instagram</option>
             </select>
           </div>
 

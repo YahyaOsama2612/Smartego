@@ -15,6 +15,7 @@ import {
   ChevronRight,
   MessageSquare,
   MessageCircle,
+  Camera,
 } from "lucide-react";
 import useCrud from "../../hooks/useCrud";
 import Button from "../../components/common/Button";
@@ -22,6 +23,7 @@ import Input from "../../components/common/Input";
 import Modal from "../../components/common/Modal";
 import WhatsItemsModal from "./WhatsItemsModal";
 import MessengerItemsModal from "./Messengeritemsmodal";
+import InstagramItemsModal from "./Instagramitemsmodal";
 import "./UsersPage.css";
 
 // Live API endpoint. Passed as an absolute URL so it hits this host
@@ -132,6 +134,7 @@ export function UsersPage() {
   const [deletingUser, setDeletingUser] = useState(null);
   const [whatsItemsUser, setWhatsItemsUser] = useState(null);
   const [messengerItemsUser, setMessengerItemsUser] = useState(null);
+  const [instagramItemsUser, setInstagramItemsUser] = useState(null);
   const [editLoading, setEditLoading] = useState(false);
 
   const emptyForm = {
@@ -406,6 +409,14 @@ export function UsersPage() {
                             onClick={() => setMessengerItemsUser(user)}
                           >
                             <MessageCircle size={16} />
+                          </button>
+                          <button
+                            type="button"
+                            className="action-icon-btn"
+                            title="View Instagram Accounts"
+                            onClick={() => setInstagramItemsUser(user)}
+                          >
+                            <Camera size={16} />
                           </button>
                           <button
                             type="button"
@@ -689,6 +700,12 @@ export function UsersPage() {
         isOpen={Boolean(messengerItemsUser)}
         onClose={() => setMessengerItemsUser(null)}
         user={messengerItemsUser}
+      />
+
+      <InstagramItemsModal
+        isOpen={Boolean(instagramItemsUser)}
+        onClose={() => setInstagramItemsUser(null)}
+        user={instagramItemsUser}
       />
     </div>
   );

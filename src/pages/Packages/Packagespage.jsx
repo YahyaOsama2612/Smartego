@@ -71,7 +71,7 @@ const findOptionLabel = (options, id) => {
   return match ? match.name : `#${id}`;
 };
 
-const TYPE_LABELS = { whats: "WhatsApp", face: "Messenger", all: "All" };
+const TYPE_LABELS = { whats: "WhatsApp", face: "Messenger", instagram: "Instagram", all: "All" };
 
 export function PackagesPage() {
   // Using the generic useCrud hook against the live admin/packages endpoint
@@ -161,7 +161,7 @@ export function PackagesPage() {
     months: "",
     discountId: "",
     taxId: "",
-    type: "whats",
+    type: "all",
   };
 
   // Form states
@@ -182,7 +182,7 @@ export function PackagesPage() {
     months: pkg.months ?? "",
     discountId: pkg.discount_id ?? "",
     taxId: pkg.tax_id ?? "",
-    type: ["face", "all"].includes(pkg.type) ? pkg.type : "whats",
+    type: ["face", "instagram", "all"].includes(pkg.type) ? pkg.type : "all",
   });
 
   const handleOpenEdit = async (pkg) => {
@@ -229,7 +229,7 @@ export function PackagesPage() {
     ) {
       errors.months = "A valid number of months is required";
     }
-    if (!["whats", "face", "all"].includes(formData.type)) {
+    if (!["whats", "face", "instagram", "all"].includes(formData.type)) {
       errors.type = "Please select a valid package type";
     }
 
@@ -573,6 +573,7 @@ export function PackagesPage() {
               >
                 <option value="whats">WhatsApp</option>
                 <option value="face">Messenger</option>
+                <option value="instagram">Instagram</option>
                 <option value="all">All</option>
               </select>
               {formErrors.type && (
