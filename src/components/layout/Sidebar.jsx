@@ -10,12 +10,14 @@ import {
   LogOut,
   Percent,
   ReceiptText,
-  ShoppingBag
+  ShoppingBag,
+  Mail
 } from "lucide-react";
 import useAuth from "../../hooks/useAuth";
 
-export function Sidebar({ isCollapsed, onToggle }) {
+export function Sidebar({ isCollapsed, isMobileOpen = false, onToggle, onNavigate }) {
   const { user, logout } = useAuth();
+  const isCompact = isCollapsed && !isMobileOpen;
 
   const navItems = [
     { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
@@ -26,17 +28,21 @@ export function Sidebar({ isCollapsed, onToggle }) {
     { label: "Tax", path: "/tax", icon: ReceiptText },
     { label: "Packages", path: "/package", icon: Layers },
     { label: "Orders", path: "/orders", icon: ShoppingBag },
-    { label: "Subscribes", path: "/subscribes", icon: Users }
+    { label: "Subscribes", path: "/subscribes", icon: Users },
+    { label: "Contact Us", path: "/contact-us", icon: Mail }
   ];
 
   return (
-    <aside className={`admin-sidebar ${isCollapsed ? "collapsed" : ""}`}>
+    <aside
+      id="admin-navigation"
+      className={`admin-sidebar ${isCollapsed ? "collapsed" : ""} ${isMobileOpen ? "mobile-open" : ""}`}
+    >
       {/* Brand Header */}
       <div className="sidebar-brand">
         <div className="brand-logo-glow">
           <ShieldCheck size={26} className="brand-icon" />
         </div>
-        {!isCollapsed && (
+        {!isCompact && (
           <div className="brand-meta">
             <span className="brand-title">Smartego</span>
             <span className="brand-badge">ADMIN</span>
@@ -47,7 +53,7 @@ export function Sidebar({ isCollapsed, onToggle }) {
       {/* Navigation Links */}
       <nav className="sidebar-nav">
         <div className="nav-section-label">
-          {!isCollapsed ? "NAVIGATION" : "•••"}
+          {!isCompact ? "NAVIGATION" : "•••"}
         </div>
         <ul className="nav-list">
           {navItems.map((item) => {
@@ -56,16 +62,19 @@ export function Sidebar({ isCollapsed, onToggle }) {
               <li key={item.path}>
                 <NavLink
                   to={item.path}
+                  onClick={() => {
+                    if (isMobileOpen) onNavigate?.();
+                  }}
                   className={({ isActive }) =>
                     `nav-link ${isActive ? "active" : ""}`
                   }
-                  title={isCollapsed ? item.label : undefined}
+                  title={isCompact ? item.label : undefined}
                 >
                   <Icon size={20} className="nav-icon" />
-                  {!isCollapsed && (
+                  {!isCompact && (
                     <span className="nav-label">{item.label}</span>
                   )}
-                  {!isCollapsed && item.badge && (
+                  {!isCompact && item.badge && (
                     <span className="nav-pill-badge">{item.badge}</span>
                   )}
                 </NavLink>
@@ -77,7 +86,7 @@ export function Sidebar({ isCollapsed, onToggle }) {
 
       {/* User Session & Collapse Controls */}
       <div className="sidebar-footer">
-        {!isCollapsed && (
+        {!isCompact && (
           <div className="sidebar-user-card">
             <div className="user-avatar-circle">
               {(user?.name || user?.email || "A").charAt(0).toUpperCase()}
@@ -103,10 +112,10 @@ export function Sidebar({ isCollapsed, onToggle }) {
           type="button"
           className="sidebar-toggle-btn"
           onClick={onToggle}
-          title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          title={isMobileOpen ? "Close navigation menu" : isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
-          {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-          {!isCollapsed && (
+          {isMobileOpen ? <ChevronLeft size={18} /> : isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+          {!isCompact && (
             <span style={{ fontSize: "12px" }}>Collapse Menu</span>
           )}
         </button>

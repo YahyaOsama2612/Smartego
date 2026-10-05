@@ -1,0 +1,250 @@
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body,
+#root,
+.main-layout,
+.main-content-wrapper,
+.main-content-area {
+  min-width: 0;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+input,
+select,
+textarea,
+button {
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .welcome-banner {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+  }
+
+  .welcome-content {
+    max-width: 100%;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+    gap: 12px;
+  }
+
+  .stat-card {
+    min-width: 0;
+    padding: 16px;
+  }
+
+  .packages-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+    gap: 14px;
+  }
+
+  .page-header-actions,
+  .settings-card-actions {
+    flex-wrap: wrap;
+  }
+
+  .user-lists-header,
+  .user-lists-actions,
+  .admins-toolbar,
+  .users-toolbar,
+  .discounts-toolbar,
+  .packages-toolbar,
+  .subscribers-toolbar,
+  .taxes-toolbar {
+    min-width: 0;
+  }
+
+  .user-lists-actions {
+    width: 100%;
+  }
+
+  .search-box {
+    min-width: 0;
+    max-width: none;
+    flex: 1 1 100%;
+  }
+
+  .toolbar-filters,
+  .taxes-toolbar-filters {
+    flex: 1 1 100%;
+  }
+
+  .filter-group,
+  .taxes-filter-group {
+    min-width: 0;
+  }
+
+  .filter-select,
+  .taxes-filter-select {
+    max-width: 100%;
+  }
+
+  .table-responsive,
+  .taxes-table-responsive {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-footer-bar,
+  .taxes-table-footer {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px 14px;
+  }
+
+  .pagination-controls,
+  .taxes-pagination-controls {
+    flex-wrap: wrap;
+  }
+
+  .modal-overlay {
+    align-items: center;
+    padding: 12px;
+  }
+
+  .modal-container {
+    max-height: calc(100vh - 24px);
+    max-height: calc(100dvh - 24px);
+  }
+
+  .modal-header {
+    gap: 12px;
+    padding: 14px 16px;
+  }
+
+  .modal-body {
+    max-height: calc(100vh - 132px);
+    max-height: calc(100dvh - 132px);
+    padding: 16px;
+  }
+
+  .modal-footer {
+    flex-wrap: wrap;
+    padding: 12px 16px;
+  }
+
+  .details-grid,
+  .readonly-info-grid,
+  .taxes-readonly-info-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .form-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .welcome-heading {
+    font-size: 20px;
+  }
+
+  .stats-grid,
+  .packages-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stat-value {
+    font-size: 22px;
+  }
+
+  .user-lists-header {
+    padding: 16px;
+  }
+
+  .user-lists-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .filter-group,
+  .taxes-filter-group {
+    width: 100%;
+  }
+
+  .filter-select,
+  .taxes-filter-select {
+    width: 100%;
+  }
+
+  .details-grid,
+  .readonly-info-grid,
+  .taxes-readonly-info-grid,
+  .form-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .details-banner {
+    align-items: flex-start;
+  }
+
+  .table-footer-bar,
+  .taxes-table-footer {
+    flex-direction: column;
+  }
+
+  .pagination-controls,
+  .taxes-pagination-controls {
+    width: 100%;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .settings-card,
+  .settings-card-head {
+    min-width: 0;
+  }
+
+  .delete-confirm-body,
+  .taxes-delete-confirm-body {
+    gap: 12px;
+  }
+
+  .btn-md,
+  .btn-lg {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+}
+
+@media (max-width: 360px) {
+  .mobile-menu-btn {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+  }
+
+  .header-page-title {
+    font-size: 16px;
+  }
+
+  .admin-header {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .main-content-area {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .login-container {
+    padding: 12px;
+  }
+}

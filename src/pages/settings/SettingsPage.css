@@ -109,6 +109,16 @@
   gap: 16px;
 }
 
+.paymob-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.paymob-fields .form-field {
+  min-width: 0;
+}
+
 .settings-textarea {
   height: auto;
   padding: 10px 14px;
@@ -150,6 +160,10 @@
 }
 
 @media (max-width: 640px) {
+  .paymob-fields {
+    grid-template-columns: 1fr;
+  }
+
   .settings-card-head {
     flex-wrap: wrap;
   }

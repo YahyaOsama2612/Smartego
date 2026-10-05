@@ -15,6 +15,7 @@ import TaxesPage from "../pages/Tax/Taxpage";
 import PackagePage from "../pages/Packages/Packagespage";
 import OrdersPage from "../pages/order/OrderPage";
 import SubscribesPage from "../pages/Subscribes/Subscriberspage";
+import ContactUsPage from "../pages/ContactUs/ContactUsPage";
 /**
  * Dedicated Router Navigation Component
  * Defines all public, authenticated, and fallback routes for Smartego Admin.
@@ -47,6 +48,7 @@ export function AppRouter() {
           <Route path="/package" element={<PackagePage />} />
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/subscribes" element={<SubscribesPage />} />
+          <Route path="/contact-us" element={<ContactUsPage />} />
         </Route>
 
         {/* 404 Catch-All Route */}
