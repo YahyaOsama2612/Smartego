@@ -1,131 +1,141 @@
-import { useState, useMemo, useEffect } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-    Search,
-    RefreshCw,
-    Filter,
-    Users as UsersIcon,
-    Database,
+    AlertTriangle,
     ChevronLeft,
     ChevronRight,
-    ArrowRight,
+    Database,
+    RefreshCw,
+    Search,
+    UserRound,
+    Users as UsersIcon,
 } from "lucide-react";
-import useCrud from "../../hooks/useCrud";
+import { useNavigate } from "react-router-dom";
+import axiosClient from "../../api/axiosClient";
 import Button from "../../components/common/Button";
 import "./Subscriberspage.css";
 
-// GET only. Uses the same host as axiosClient so the admin bearer token is
-// accepted (a different host returns 401, which logs the admin out).
-// Note the API's spelling: "subscripers".
-const SUBSCRIBERS_ENDPOINT = "https://bcknd.smartego.org/api/admin/subscripers";
+const SUBSCRIBERS_ENDPOINT = "/admin/subscripers";
+const PAGE_SIZE_OPTIONS = [10, 20, 50, 100];
 
-// Helper: render an ISO timestamp / date string as a short readable date
-const formatDate = (value) => {
-    if (!value) return "—";
-    const d = new Date(value);
-    if (Number.isNaN(d.getTime())) return value;
-    return d.toLocaleDateString(undefined, {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-    });
+const displayValue = (value) => {
+    if (value === undefined || value === null || value === "") return "—";
+    if (typeof value === "string" || typeof value === "number") return String(value);
+    return "—";
 };
 
-// Helper: show "—" for empty values but keep 0
-const orDash = (value) =>
-    value === undefined || value === null || value === "" ? "—" : value;
-
-// Helper: pick the connected account for the subscriber's channel.
-//  - WhatsApp  -> whats_item.phone
-//  - Messenger -> messengerAccount.page_name
-// Falls back to whichever one exists if the channel name is unexpected.
-const getAccount = (sub) => {
-    const channel = String(sub.channel || "").toLowerCase();
-    const phone = sub.whats_item?.phone;
-    const pageName = sub.messengerAccount?.page_name;
-
-    if (channel.includes("what")) {
-        return { label: "Phone", value: phone || "—" };
+const getSubscriberList = (responseData) => {
+    if (responseData?.status === false) {
+        throw new Error(responseData.message || "The server couldn't load subscribers.");
     }
-    if (channel.includes("mess")) {
-        return { label: "Page", value: pageName || "—" };
+
+    const payload = responseData?.data ?? responseData;
+    if (Array.isArray(payload)) {
+        return { subscribers: payload, pagination: responseData?.pagination ?? {} };
     }
-    if (phone) return { label: "Phone", value: phone };
-    if (pageName) return { label: "Page", value: pageName };
-    return { label: "", value: "—" };
+    if (payload && typeof payload === "object" && Array.isArray(payload.data)) {
+        return { subscribers: payload.data, pagination: responseData?.pagination ?? payload };
+    }
+
+    throw new Error("The server returned an unexpected subscriber list response.");
 };
 
-const getAccountLabel = (sub) => getAccount(sub).value;
-
-// Helper: pick a tag style based on the channel name
-const channelTagClass = (channel) => {
-    const c = String(channel || "").toLowerCase();
-    if (c.includes("what")) return "type-percentage";
-    if (c.includes("mess")) return "type-fixed";
-    return "type-neutral";
+const getErrorMessage = (error) => {
+    const responseData = error.response?.data;
+    if (typeof responseData?.message === "string") return responseData.message;
+    if (typeof responseData?.error === "string") return responseData.error;
+    if (typeof error.message === "string") return error.message;
+    return "Couldn't load subscribers.";
 };
 
 export function SubscribersPage() {
-    // Read-only: we only use the list + refetch parts of useCrud
-    const { items: subscribers, loading, refetch } = useCrud(
-        SUBSCRIBERS_ENDPOINT,
-        {
-            initialData: [],
-            defaultParams: {},
-        },
-    );
-
-    const [searchTerm, setSearchTerm] = useState("");
-    const [channelFilter, setChannelFilter] = useState("ALL");
-    const [perPage, setPerPage] = useState(10);
+    const navigate = useNavigate();
+    const [subscribers, setSubscribers] = useState([]);
     const [page, setPage] = useState(1);
+    const [perPage, setPerPage] = useState(10);
+    const [pagination, setPagination] = useState({
+        currentPage: 1,
+        lastPage: 1,
+        total: 0,
+        from: null,
+        to: null,
+        hasPrevious: false,
+        hasNext: false,
+    });
+    const [searchTerm, setSearchTerm] = useState("");
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+    const [refreshKey, setRefreshKey] = useState(0);
 
-    // The API returns the full list, so search / filter / paging are client-side
-    const channelOptions = useMemo(() => {
-        const set = new Set();
-        subscribers.forEach((s) => s.channel && set.add(s.channel));
-        return Array.from(set);
-    }, [subscribers]);
+    const loadSubscribers = useCallback(async (signal) => {
+        if (signal.aborted) return;
+        setLoading(true);
+        setError("");
 
-    const filtered = useMemo(() => {
-        const q = searchTerm.trim().toLowerCase();
-        return subscribers.filter((sub) => {
-            if (channelFilter !== "ALL" && sub.channel !== channelFilter) {
-                return false;
-            }
-            if (!q) return true;
-            return [
-                sub.user_name,
-                sub.user_phone,
-                sub.package_name,
-                getAccountLabel(sub),
-            ]
-                .filter(Boolean)
-                .some((v) => String(v).toLowerCase().includes(q));
-        });
-    }, [subscribers, searchTerm, channelFilter]);
+        try {
+            const response = await axiosClient.get(SUBSCRIBERS_ENDPOINT, {
+                params: { page, per_page: perPage },
+                signal,
+            });
+            const { subscribers: records, pagination: meta } = getSubscriberList(response.data);
+            const currentPage = Math.max(1, Number(meta.current_page) || page);
+            const lastPage = Math.max(1, Number(meta.last_page) || 1);
 
-    const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
+            setSubscribers(records);
+            setPagination({
+                currentPage,
+                lastPage,
+                total: Number(meta.total) || records.length,
+                from: meta.from ?? null,
+                to: meta.to ?? null,
+                hasPrevious: Boolean(meta.prev_page_url) || currentPage > 1,
+                hasNext: Boolean(meta.next_page_url) || currentPage < lastPage,
+            });
+        } catch (requestError) {
+            if (!signal.aborted) setError(getErrorMessage(requestError));
+        } finally {
+            if (!signal.aborted) setLoading(false);
+        }
+    }, [page, perPage]);
 
-    // Reset to the first page whenever the filters change
     useEffect(() => {
-        setPage(1);
-    }, [searchTerm, channelFilter, perPage]);
+        const controller = new AbortController();
+        void Promise.resolve().then(() => loadSubscribers(controller.signal));
+        return () => controller.abort();
+    }, [loadSubscribers, refreshKey]);
 
-    const currentPage = Math.min(page, totalPages);
-    const visible = filtered.slice(
-        (currentPage - 1) * perPage,
-        currentPage * perPage,
-    );
+    const visibleSubscribers = useMemo(() => {
+        const query = searchTerm.trim().toLowerCase();
+        if (!query) return subscribers;
+        return subscribers.filter((subscriber) =>
+            [subscriber.name, subscriber.email, subscriber.phone]
+                .some((value) => String(value ?? "").toLowerCase().includes(query)),
+        );
+    }, [subscribers, searchTerm]);
+
+    const refresh = () => setRefreshKey((key) => key + 1);
+    const changePageSize = (event) => {
+        setPerPage(Number(event.target.value));
+        setPage(1);
+    };
+    const goToPage = (nextPage) => {
+        if (nextPage < 1 || nextPage > pagination.lastPage) return;
+        setPage(nextPage);
+    };
 
     return (
         <div className="subscribers-page-container">
-            {/* Header Actions */}
             <div className="subscribers-page-header">
+                <div>
+                    <h1 className="subscribers-page-title">Subscribers</h1>
+                    <p className="subscribers-page-description">
+                        Select a subscriber to view their subscription details.
+                    </p>
+                </div>
                 <div className="page-header-actions">
                     <Button
                         variant="outline"
                         icon={RefreshCw}
-                        onClick={refetch}
+                        onClick={refresh}
                         isLoading={loading}
                     >
                         Refresh
@@ -133,79 +143,74 @@ export function SubscribersPage() {
                 </div>
             </div>
 
-            {/* Filter and Search Bar */}
             <div className="subscribers-toolbar">
                 <div className="search-box">
                     <Search size={16} className="search-box-icon" />
                     <input
-                        type="text"
-                        placeholder="Search by name, phone, package..."
+                        type="search"
+                        aria-label="Search subscribers on this page"
+                        placeholder="Search this page by name, email, or phone..."
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={(event) => setSearchTerm(event.target.value)}
                         className="search-box-input"
                     />
                 </div>
-
                 <div className="toolbar-filters">
-                    <div className="filter-group">
-                        <Filter size={16} className="filter-icon" />
-                        <select
-                            value={channelFilter}
-                            onChange={(e) => setChannelFilter(e.target.value)}
-                            className="filter-select"
-                        >
-                            <option value="ALL">All Channels</option>
-                            {channelOptions.map((c) => (
-                                <option key={c} value={c}>
-                                    {c}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className="filter-group">
-                        <Filter size={16} className="filter-icon" />
-                        <select
-                            value={perPage}
-                            onChange={(e) => setPerPage(Number(e.target.value))}
-                            className="filter-select"
-                        >
-                            <option value={10}>10 / page</option>
-                            <option value={20}>20 / page</option>
-                            <option value={50}>50 / page</option>
-                            <option value={100}>100 / page</option>
-                        </select>
-                    </div>
+                    <select
+                        aria-label="Subscribers per page"
+                        value={perPage}
+                        onChange={changePageSize}
+                        className="filter-select"
+                    >
+                        {PAGE_SIZE_OPTIONS.map((size) => (
+                            <option key={size} value={size}>{size} / page</option>
+                        ))}
+                    </select>
                 </div>
             </div>
 
-            {/* Subscribers Table Card */}
+            {error && (
+                <div className="subscribers-error" role="alert">
+                    <AlertTriangle size={18} />
+                    <span>{error}</span>
+                    <Button variant="outline" onClick={refresh}>Try again</Button>
+                </div>
+            )}
+
             <div className="subscribers-table-card">
                 <div className="table-responsive">
                     <table className="custom-table">
                         <thead>
                             <tr>
                                 <th>Subscriber</th>
-                                <th>Package</th>
-                                <th>Channel</th>
-                                <th>Account</th>
-                                <th>Period</th>
-                                <th>Total Msgs</th>
-                                <th>Sent</th>
-                                <th>Available</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Available Messages</th>
+                                <th aria-label="Details" />
                             </tr>
                         </thead>
                         <tbody>
-                            {!loading && visible.length === 0 ? (
+                            {!loading && visibleSubscribers.length === 0 ? (
                                 <tr>
-                                    <td colSpan="8" className="empty-state">
+                                    <td colSpan="5" className="empty-state">
                                         <Database size={32} className="empty-icon" />
-                                        <p>No subscribers found matching your query.</p>
+                                        <p>{error ? "Subscribers couldn't be loaded." : "No subscribers found."}</p>
                                     </td>
                                 </tr>
                             ) : (
-                                visible.map((sub) => (
-                                    <tr key={sub.id} className="table-row">
+                                visibleSubscribers.map((subscriber) => (
+                                    <tr
+                                        key={subscriber.id}
+                                        className="table-row subscriber-clickable-row"
+                                        tabIndex={0}
+                                        onClick={() => navigate(`/subscribes/${subscriber.id}`)}
+                                        onKeyDown={(event) => {
+                                            if (event.key === "Enter" || event.key === " ") {
+                                                event.preventDefault();
+                                                navigate(`/subscribes/${subscriber.id}`);
+                                            }
+                                        }}
+                                    >
                                         <td>
                                             <div className="subscriber-cell">
                                                 <div className="subscriber-cell-icon">
@@ -213,82 +218,57 @@ export function SubscribersPage() {
                                                 </div>
                                                 <div className="subscriber-cell-text">
                                                     <span className="subscriber-cell-name">
-                                                        {orDash(sub.user_name)}
+                                                        {displayValue(subscriber.name)}
                                                     </span>
-                                                    <span className="subscriber-cell-phone">
-                                                        {orDash(sub.user_phone)}
-                                                    </span>
+
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>
-                                            <span className="type-tag type-neutral">
-                                                {orDash(sub.package_name)}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span
-                                                className={`type-tag ${channelTagClass(sub.channel)}`}
-                                            >
-                                                {orDash(sub.channel)}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div className="account-cell">
-                                                {getAccount(sub).label && (
-                                                    <span className="account-cell-label">
-                                                        {getAccount(sub).label}
-                                                    </span>
-                                                )}
-                                                <span className="cell-amount">
-                                                    {getAccount(sub).value}
-                                                </span>
-                                            </div>
-                                        </td>
-                                        <td className="cell-date">
-                                            <span className="period-cell">
-                                                {formatDate(sub.from)}
-                                                <ArrowRight size={12} />
-                                                {formatDate(sub.to)}
-                                            </span>
-                                        </td>
-                                        <td className="cell-amount">{orDash(sub.msgs)}</td>
-                                        <td className="cell-amount">{orDash(sub.send_msgs)}</td>
+                                        <td>{displayValue(subscriber.email)}</td>
+                                        <td>{displayValue(subscriber.phone)}</td>
                                         <td className="cell-amount">
-                                            {orDash(sub.available_msgs)}
+                                            {displayValue(subscriber.available_msgs)}
+                                        </td>
+                                        <td>
+                                            <span className="subscriber-details-hint">
+                                                <UserRound size={15} />
+                                                View details
+                                            </span>
                                         </td>
                                     </tr>
                                 ))
+                            )}
+                            {loading && (
+                                <tr>
+                                    <td colSpan="5" className="empty-state">Loading subscribers...</td>
+                                </tr>
                             )}
                         </tbody>
                     </table>
                 </div>
 
-                {/* Footer Summary */}
                 <div className="table-footer-bar">
                     <span>
-                        Showing {visible.length} of {filtered.length} total entries
+                        Showing {pagination.from ?? 0}–{pagination.to ?? 0} of {pagination.total} subscribers
+                        {searchTerm.trim() ? ` · ${visibleSubscribers.length} on this page match` : ""}
                     </span>
-
                     <div className="pagination-controls">
                         <button
                             type="button"
                             className="action-icon-btn"
-                            disabled={loading || currentPage <= 1}
-                            onClick={() => setPage(currentPage - 1)}
-                            title="Previous page"
+                            disabled={loading || !pagination.hasPrevious}
+                            onClick={() => goToPage(pagination.currentPage - 1)}
+                            aria-label="Previous page"
                         >
                             <ChevronLeft size={16} />
                         </button>
-                        <span>
-                            Page {currentPage} of {totalPages}
-                        </span>
+                        <span>Page {pagination.currentPage} of {pagination.lastPage}</span>
                         <button
                             type="button"
                             className="action-icon-btn"
-                            disabled={loading || currentPage >= totalPages}
-                            onClick={() => setPage(currentPage + 1)}
-                            title="Next page"
+                            disabled={loading || !pagination.hasNext}
+                            onClick={() => goToPage(pagination.currentPage + 1)}
+                            aria-label="Next page"
                         >
                             <ChevronRight size={16} />
                         </button>

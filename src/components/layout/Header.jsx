@@ -14,6 +14,7 @@ const SEARCH_PAGES = [
   { label: "Orders", path: "/orders", keywords: "purchases" },
   { label: "Subscribes", path: "/subscribes", keywords: "subscribers" },
   { label: "Contact Us", path: "/contact-us", keywords: "messages inquiries" },
+  { label: "Revenue Report", path: "/reports/revenue", keywords: "revenue sales analytics reports" },
 ];
 
 export function Header({ onMenuToggle, isMobileMenuOpen = false }) {
@@ -96,6 +97,7 @@ export function Header({ onMenuToggle, isMobileMenuOpen = false }) {
     if (pathname.includes("/orders")) return "Orders";
     if (pathname.includes("/subscribes")) return "Subscribes";
     if (pathname.includes("/contact-us")) return "Contact Us";
+    if (pathname.includes("/reports/revenue")) return "Revenue Report";
     return "Dashboard Overview";
   };
 

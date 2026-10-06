@@ -11,7 +11,10 @@ import {
   Percent,
   ReceiptText,
   ShoppingBag,
-  Mail
+  Mail,
+  ChartBar,
+  MessageSquare,
+  WalletCards,
 } from "lucide-react";
 import useAuth from "../../hooks/useAuth";
 
@@ -29,7 +32,10 @@ export function Sidebar({ isCollapsed, isMobileOpen = false, onToggle, onNavigat
     { label: "Packages", path: "/package", icon: Layers },
     { label: "Orders", path: "/orders", icon: ShoppingBag },
     { label: "Subscribes", path: "/subscribes", icon: Users },
-    { label: "Contact Us", path: "/contact-us", icon: Mail }
+    { label: "Contact Us", path: "/contact-us", icon: Mail },
+    { label: "Revenue Report", path: "/reports/revenue", icon: ChartBar },
+    { label: "Message Consumption", path: "/reports/messages", icon: MessageSquare },
+    { label: "Subscribers Spending", path: "/reports/subscribers-spending", icon: WalletCards }
   ];
 
   return (

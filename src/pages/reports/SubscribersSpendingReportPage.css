@@ -1,0 +1,310 @@
+.subscribers-spending-page {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.subscribers-spending-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.subscribers-spending-eyebrow {
+  color: var(--primary);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+.subscribers-spending-header h1 {
+  margin: 5px 0 4px;
+  color: var(--text-primary);
+  font-size: 26px;
+}
+
+.subscribers-spending-header p,
+.subscribers-spending-filter-title p,
+.subscribers-spending-table-heading p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.subscribers-spending-filter-card,
+.subscribers-spending-table-card {
+  min-width: 0;
+  padding: 20px 22px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-sm);
+}
+
+.subscribers-spending-filter-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.subscribers-spending-filter-title > svg {
+  color: var(--primary);
+}
+
+.subscribers-spending-filter-title h2,
+.subscribers-spending-table-heading h2 {
+  margin: 0 0 4px;
+  color: var(--text-primary);
+  font-size: 15px;
+}
+
+.subscribers-spending-filter-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(140px, 1fr)) auto auto;
+  align-items: end;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.subscribers-spending-filter-fields label:not(.subscribers-spending-checkbox) {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 7px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.subscribers-spending-filter-fields input[type="date"],
+.subscribers-spending-filter-fields select {
+  box-sizing: border-box;
+  width: 100%;
+  height: 40px;
+  padding: 0 11px;
+  border: 1px solid #cbd5e1;
+  border-radius: var(--radius-md);
+  background: #fff;
+  color: var(--text-primary);
+  font: inherit;
+}
+
+.subscribers-spending-filter-fields input:focus,
+.subscribers-spending-filter-fields select:focus {
+  outline: 2px solid var(--primary-glow);
+  border-color: var(--primary);
+}
+
+.subscribers-spending-checkbox {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.subscribers-spending-checkbox input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary);
+}
+
+.subscribers-spending-filter-fields > button {
+  min-height: 40px;
+}
+
+.subscribers-spending-error {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--error-border);
+  border-radius: var(--radius-md);
+  background: var(--error-bg);
+  color: var(--error-text);
+}
+
+.subscribers-spending-error > span {
+  flex: 1;
+  white-space: pre-wrap;
+}
+
+.subscribers-spending-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.subscribers-spending-summary-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 19px;
+  border: 1px solid #a7f3d0;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(145deg, #ecfdf5 0%, #fff 82%);
+  box-shadow: var(--shadow-sm);
+}
+
+.subscribers-spending-summary-context {
+  border-color: var(--border-color);
+  background: #fff;
+}
+
+.subscribers-spending-summary-icon {
+  display: inline-flex;
+  width: 38px;
+  height: 38px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: #d1fae5;
+  color: #047857;
+}
+
+.subscribers-spending-icon-spending {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.subscribers-spending-summary-card > span {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.subscribers-spending-summary-card > strong {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  color: var(--text-primary);
+  font-size: clamp(19px, 2vw, 25px);
+}
+
+.subscribers-spending-summary-card > small {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.subscribers-spending-table-heading {
+  margin-bottom: 18px;
+}
+
+.subscribers-spending-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.subscribers-spending-table-scroll table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.subscribers-spending-table-scroll th,
+.subscribers-spending-table-scroll td {
+  min-width: 110px;
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 12px;
+  vertical-align: top;
+}
+
+.subscribers-spending-table-scroll th {
+  background: #f8fafc;
+  color: var(--text-primary);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.subscribers-spending-table-scroll tr:last-child td {
+  border-bottom: 0;
+}
+
+.subscribers-spending-empty {
+  height: 120px;
+  color: var(--text-muted) !important;
+  text-align: center;
+}
+
+.subscribers-spending-empty svg {
+  display: block;
+  margin: 0 auto 8px;
+}
+
+.subscribers-spending-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.subscribers-spending-pagination > div {
+  display: flex;
+  gap: 8px;
+}
+
+.subscribers-spending-pagination button {
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: #fff;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.subscribers-spending-pagination button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+@media (max-width: 1000px) {
+  .subscribers-spending-filter-fields {
+    grid-template-columns: repeat(2, minmax(140px, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .subscribers-spending-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .subscribers-spending-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .subscribers-spending-error {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 460px) {
+  .subscribers-spending-filter-card,
+  .subscribers-spending-table-card {
+    padding: 17px;
+  }
+
+  .subscribers-spending-filter-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .subscribers-spending-filter-fields > button {
+    width: 100%;
+  }
+}
