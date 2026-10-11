@@ -84,7 +84,7 @@ export function DashboardPage() {
             Welcome,{" "}
             {user?.name || user?.email?.split("@")[0] || "Administrator"}! 👋
           </h2>
-          <p className="welcome-desc">Smartego Restaurant & Client Hub</p>
+          <p className="welcome-desc">Smartego  Client Hub</p>
         </div>
         <div className="welcome-actions">
           <Button
@@ -102,7 +102,7 @@ export function DashboardPage() {
       <div className="stats-grid">
         <div className="stat-card">
           <div className="stat-card-header">
-            <span className="stat-title">Total Restaurants</span>
+            <span className="stat-title">Total Users</span>
             <div className="stat-icon-wrapper stat-emerald">
               <Building2 size={20} />
             </div>
@@ -112,7 +112,7 @@ export function DashboardPage() {
 
         <div className="stat-card">
           <div className="stat-card-header">
-            <span className="stat-title">Active Restaurants</span>
+            <span className="stat-title">Active Users</span>
             <div className="stat-icon-wrapper stat-emerald">
               <ActivityIcon size={20} />
             </div>
