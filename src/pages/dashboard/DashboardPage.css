@@ -157,6 +157,11 @@
   color: #0284c7;
 }
 
+.stat-amber {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
 .stat-value {
   font-size: 24px;
   font-weight: 700;

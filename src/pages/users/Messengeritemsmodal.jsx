@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { MessageCircle, RefreshCw, AlertCircle, Plus, Key, Edit2, Trash2 } from "lucide-react";
+import { MessageCircle, RefreshCw, AlertCircle, Plus, Key, Edit2, Trash2, Coins } from "lucide-react";
 import Modal from "../../components/common/Modal";
 import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
@@ -292,6 +292,7 @@ export default function MessengerItemsModal({ isOpen, onClose, user }) {
                                         <th>Verify Token</th>
                                         <th>Status</th>
                                         <th>Msgs Sent</th>
+                                        <th>Total Tokens</th>
                                         <th>Updated At</th>
                                         <th className="th-actions">Actions</th>
                                     </tr>
@@ -315,6 +316,12 @@ export default function MessengerItemsModal({ isOpen, onClose, user }) {
                                                 </span>
                                             </td>
                                             <td>{item.msg_number ?? "—"}</td>
+                                            <td>
+                                                <span className="tokens-badge" title="Total Tokens">
+                                                    <Coins size={13} />
+                                                    {Number(item.total_tokens ?? 0).toLocaleString()}
+                                                </span>
+                                            </td>
                                             <td>{formatDate(item.updated_at)}</td>
                                             <td>
                                                 <div className="actions-cell">

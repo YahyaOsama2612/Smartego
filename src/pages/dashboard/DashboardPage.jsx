@@ -7,6 +7,8 @@ import {
   Radio,
   ShoppingBag,
   ActivityIcon,
+  Sparkles,
+  Coins,
 } from "lucide-react";
 import useAuth from "../../hooks/useAuth";
 import axiosClient from "../../api/axiosClient";
@@ -18,6 +20,7 @@ const FALLBACK_DASHBOARD_STATS = {
   active_order: 0,
   used: 0,
   remaining: null,
+  ai_remaining_tokens: 0,
   period: { from: null, to: null },
   overview: { total_restaurants: 0, active_restaurants: 0, total_orders: 0 },
 };
@@ -54,7 +57,7 @@ export function DashboardPage() {
     void Promise.resolve().then(fetchDashboardStats);
   }, [fetchDashboardStats]);
 
-  const { active_order, used, remaining, period, overview } = dashboardStats;
+  const { active_order, used, remaining, ai_remaining_tokens, period, overview } = dashboardStats;
 
   const formatDate = (dateStr) => {
     if (!dateStr) return "N/A";
@@ -190,6 +193,25 @@ export function DashboardPage() {
               {remaining === null || remaining === undefined
                 ? "No cap on this plan"
                 : "Left in current period"}
+            </span>
+          </div>
+        </div>
+
+        <div className="stat-card">
+          <div className="stat-card-header">
+            <span className="stat-title">AI Remaining Tokens</span>
+            <div className="stat-icon-wrapper stat-amber">
+              <Sparkles size={20} />
+            </div>
+          </div>
+          <div className="stat-value">
+            {statsLoading
+              ? "—"
+              : (Number(ai_remaining_tokens) || 0).toLocaleString()}
+          </div>
+          <div className="stat-footer">
+            <span className="stat-trend positive">
+              Available AI tokens
             </span>
           </div>
         </div>

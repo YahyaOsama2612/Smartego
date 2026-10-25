@@ -16,6 +16,9 @@ import {
   MessageSquare,
   MessageCircle,
   Camera,
+  Coins,
+  Calendar,
+  X,
 } from "lucide-react";
 import useCrud from "../../hooks/useCrud";
 import Button from "../../components/common/Button";
@@ -32,12 +35,14 @@ const USERS_ENDPOINT = "https://bcknd.smartego.org/api/admin/users";
 
 // Helper: strip out "unset" filter values so we don't send empty/ALL
 // query params to the API.
-const buildQueryParams = ({ search, phoneStatus, paginate, perPage }) => {
+const buildQueryParams = ({ search, phoneStatus, paginate, perPage, from, to }) => {
   const params = {};
   if (search && search.trim()) params.search = search.trim();
   if (phoneStatus && phoneStatus !== "ALL") params.phone_status = phoneStatus;
   if (paginate !== "ALL") params.paginate = paginate === "true" ? 1 : 0;
   if (perPage) params.per_page = Number(perPage);
+  if (from) params.from = from;
+  if (to) params.to = to;
   return params;
 };
 
@@ -75,6 +80,8 @@ export function UsersPage() {
   const [phoneStatusFilter, setPhoneStatusFilter] = useState("ALL");
   const [paginateFilter, setPaginateFilter] = useState("true");
   const [perPage, setPerPage] = useState(10);
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [page, setPage] = useState(1);
   const isFirstRun = useRef(true);
 
@@ -97,6 +104,8 @@ export function UsersPage() {
               phoneStatus: phoneStatusFilter,
               paginate: paginateFilter,
               perPage,
+              from: fromDate,
+              to: toDate,
             }),
           },
           { merge: false },
@@ -109,7 +118,7 @@ export function UsersPage() {
 
     return () => clearTimeout(handle);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTerm, phoneStatusFilter, paginateFilter, perPage]);
+  }, [searchTerm, phoneStatusFilter, paginateFilter, perPage, fromDate, toDate]);
 
   const goToPage = (nextPage) => {
     if (nextPage < 1) return;
@@ -122,6 +131,8 @@ export function UsersPage() {
           phoneStatus: phoneStatusFilter,
           paginate: paginateFilter,
           perPage,
+          from: fromDate,
+          to: toDate,
         }),
       },
       { merge: false },
@@ -323,6 +334,45 @@ export function UsersPage() {
               <option value={100}>100 / page</option>
             </select>
           </div>
+
+          <div className="filter-date-group">
+            <div className="date-input-wrapper">
+              <span className="date-input-label">From</span>
+              <Calendar size={14} className="date-input-icon" />
+              <input
+                type="date"
+                value={fromDate}
+                onChange={(e) => setFromDate(e.target.value)}
+                className="date-input-control"
+                title="Filter users created from date"
+              />
+            </div>
+            <div className="date-input-wrapper">
+              <span className="date-input-label">To</span>
+              <Calendar size={14} className="date-input-icon" />
+              <input
+                type="date"
+                value={toDate}
+                onChange={(e) => setToDate(e.target.value)}
+                className="date-input-control"
+                title="Filter users created to date"
+              />
+            </div>
+            {(fromDate || toDate) && (
+              <button
+                type="button"
+                className="date-clear-btn"
+                onClick={() => {
+                  setFromDate("");
+                  setToDate("");
+                }}
+                title="Clear date filter"
+              >
+                <X size={14} />
+                <span>Clear</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -335,6 +385,7 @@ export function UsersPage() {
                 <th>Users</th>
                 <th>Role</th>
                 <th>Phone</th>
+                <th>Total Tokens</th>
                 <th>Created Date</th>
                 <th className="th-actions">Actions</th>
               </tr>
@@ -342,7 +393,7 @@ export function UsersPage() {
             <tbody>
               {!loading && users.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="empty-state">
+                  <td colSpan="6" className="empty-state">
                     <Database size={32} className="empty-icon" />
                     <p>No records found matching your query.</p>
                   </td>
@@ -390,6 +441,12 @@ export function UsersPage() {
                             </span>
                           )}
                         </div>
+                      </td>
+                      <td>
+                        <span className="tokens-badge" title="Total Tokens">
+                          <Coins size={13} />
+                          {Number(user.total_tokens ?? 0).toLocaleString()}
+                        </span>
                       </td>
                       <td className="cell-date">{formatDate(user.created_at)}</td>
                       <td>

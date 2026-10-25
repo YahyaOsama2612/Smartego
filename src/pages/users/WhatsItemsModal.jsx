@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { MessageSquare, RefreshCw, AlertCircle, Plus, Send, Key, Edit2, Trash2 } from "lucide-react";
+import { MessageSquare, RefreshCw, AlertCircle, Plus, Send, Key, Edit2, Trash2, Coins } from "lucide-react";
 import Modal from "../../components/common/Modal";
 import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
@@ -289,6 +289,7 @@ export default function WhatsItemsModal({ isOpen, onClose, user }) {
                     <th>Phone</th>
                     <th>WABA ID</th>
                     <th>Status</th>
+                    <th>Total Tokens</th>
                     <th>Verified At</th>
                     <th className="th-actions">Actions</th>
                   </tr>
@@ -304,6 +305,12 @@ export default function WhatsItemsModal({ isOpen, onClose, user }) {
                       <td>
                         <span className={`status-pill ${item.phone_status === 'connected' || item.phone_status === 'APPROVED' ? 'status-active' : 'status-pending'}`}>
                           {item.phone_status || "—"}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="tokens-badge" title="Total Tokens">
+                          <Coins size={13} />
+                          {Number(item.total_tokens ?? 0).toLocaleString()}
                         </span>
                       </td>
                       <td>{formatDate(item.phone_verified_at)}</td>
