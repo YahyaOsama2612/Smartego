@@ -15,6 +15,7 @@ import {
   ChartBar,
   MessageSquare,
   WalletCards,
+  FileText,
 } from "lucide-react";
 import useAuth from "../../hooks/useAuth";
 
@@ -35,7 +36,8 @@ export function Sidebar({ isCollapsed, isMobileOpen = false, onToggle, onNavigat
     { label: "Contact Us", path: "/contact-us", icon: Mail },
     { label: "Revenue Report", path: "/reports/revenue", icon: ChartBar },
     { label: "Message Consumption", path: "/reports/messages", icon: MessageSquare },
-    { label: "Subscribers Spending", path: "/reports/subscribers-spending", icon: WalletCards }
+    { label: "Subscribers Spending", path: "/reports/subscribers-spending", icon: WalletCards },
+    { label: "Templates", path: "/templates", icon: FileText },
   ];
 
   return (

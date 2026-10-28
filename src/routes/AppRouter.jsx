@@ -18,6 +18,7 @@ import SubscribesPage from "../pages/Subscribes/Subscriberspage";
 import SubscriberDetailsPage from "../pages/Subscribes/SubscriberDetailsPage";
 import ContactUsPage from "../pages/ContactUs/ContactUsPage";
 import RevenueReportPage from "../pages/reports/RevenueReportPage";
+import TemplatesPage from "../pages/templates/TemplatesPage";
 import MessageConsumptionReportPage from "../pages/reports/MessageConsumptionReportPage";
 import SubscribersSpendingReportPage from "../pages/reports/SubscribersSpendingReportPage";
 /**
@@ -57,6 +58,7 @@ export function AppRouter() {
           <Route path="/reports/revenue" element={<RevenueReportPage />} />
           <Route path="/reports/messages" element={<MessageConsumptionReportPage />} />
           <Route path="/reports/subscribers-spending" element={<SubscribersSpendingReportPage />} />
+          <Route path="/templates" element={<TemplatesPage />} />
         </Route>
 
         {/* 404 Catch-All Route */}
