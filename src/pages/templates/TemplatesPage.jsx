@@ -37,6 +37,7 @@ import {
   LayoutList,
   PenSquare,
   Clock,
+  Download,
 } from "lucide-react";
 import axiosClient from "../../api/axiosClient";
 import { toast } from "../../components/common/Toast";
@@ -602,6 +603,7 @@ function BuilderTab({ onSwitchToList }) {
   // Action states
   const [saving, setSaving] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [generatedFileUrl, setGeneratedFileUrl] = useState(null);
 
   // Fetch accounts on mount
   const fetchAccounts = useCallback(async () => {
@@ -666,6 +668,7 @@ function BuilderTab({ onSwitchToList }) {
     const hasAccount = Object.values(selectedAccounts).some((v) => v !== null && v !== "");
     if (!hasAccount) { toast.error("Select at least one account to associate with."); return; }
     setGenerating(true);
+    setGeneratedFileUrl(null); // reset previous download
     try {
       // Only include account IDs that were actually selected (non-null/empty)
       const payload = { groups: buildGroupsPayload(groups) };
@@ -674,7 +677,14 @@ function BuilderTab({ onSwitchToList }) {
       if (selectedAccounts.messenger_account_id) payload.messenger_account_id = selectedAccounts.messenger_account_id;
       if (selectedAccounts.telegram_account_id)  payload.telegram_account_id  = selectedAccounts.telegram_account_id;
       if (selectedAccounts.tiktok_account_id)    payload.tiktok_account_id    = selectedAccounts.tiktok_account_id;
-      await axiosClient.post(GENERATE_AI_URL, payload);
+      const res = await axiosClient.post(GENERATE_AI_URL, payload);
+      const data = res.data?.data || res.data;
+      // Support both full URL (file_url) and relative path (ai_file)
+      const STORAGE_BASE = "https://bcknd.smartego.org/storage/";
+      const fileUrl =
+        data?.file_url ||
+        (data?.ai_file ? `${STORAGE_BASE}${data.ai_file.replace(/\\/g, "/")}` : null);
+      if (fileUrl) setGeneratedFileUrl(fileUrl);
       toast.success("AI markdown file generated and linked successfully!");
     } catch (err) {
       if (err.response?.status !== 401) {
@@ -690,6 +700,49 @@ function BuilderTab({ onSwitchToList }) {
   };
 
   const md = buildMarkdown(groups, templateName);
+
+  // Force-download the AI file
+  // Uses XMLHttpRequest so we can attach the auth token and get a binary response.
+  // If CORS blocks reading the body (storage path has no CORS headers), we fall
+  // back to window.open so the browser can download it natively.
+  const [downloading, setDownloading] = useState(false);
+  const handleDownloadAiFile = () => {
+    if (!generatedFileUrl) return;
+    const token = localStorage.getItem("smartego_token");
+    const fileName = generatedFileUrl.split("/").pop() || "ai_file.md";
+    setDownloading(true);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", generatedFileUrl, true);
+    xhr.responseType = "blob";
+    if (token) xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+
+    xhr.onload = () => {
+      setDownloading(false);
+      if (xhr.status === 200) {
+        const blobUrl = URL.createObjectURL(xhr.response);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(blobUrl);
+      } else {
+        // XHR succeeded but non-200 — fall back to direct navigation
+        window.open(generatedFileUrl, "_blank");
+      }
+    };
+
+    xhr.onerror = () => {
+      // CORS blocked reading the response → fall back to direct navigation
+      setDownloading(false);
+      window.open(generatedFileUrl, "_blank");
+      toast.info("File opened in a new tab — use Ctrl+S / File > Save to save it.");
+    };
+
+    xhr.send();
+  };
 
   return (
     <div className="tpl-page">
@@ -722,6 +775,19 @@ function BuilderTab({ onSwitchToList }) {
             {generating ? <RefreshCw size={15} className="tpl-spin" /> : <Sparkles size={15} />}
             {generating ? "Generating..." : "Generate AI File"}
           </button>
+          {generatedFileUrl && (
+            <button
+              className="tpl-btn tpl-btn-download"
+              onClick={handleDownloadAiFile}
+              disabled={downloading}
+              title="Download generated AI file"
+            >
+              {downloading
+                ? <RefreshCw size={15} className="tpl-spin" />
+                : <Download size={15} />}
+              {downloading ? "Downloading..." : "Download AI File"}
+            </button>
+          )}
           {onSwitchToList && (
             <button className="tpl-btn tpl-btn-ghost" onClick={onSwitchToList} title="View all templates">
               <LayoutList size={15} /> All Templates
